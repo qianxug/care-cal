@@ -1,13 +1,13 @@
 import { React, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { DownloadOutlined, EditOutlined,PlusOutlined } from '@ant-design/icons';
-import './DashboardPage.css';
+import { DownloadOutlined, EditOutlined } from '@ant-design/icons';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Button, Tooltip, Card } from 'antd';
 import moment from 'moment';
 import {useAuth} from "../contexts/AuthContext"
 import { Link } from 'react-router-dom';
+import TopNavBar from './TopNavBar';
 
 
 const ROUTINE_EVENTS_KEY = 'care-cal.routine-events'
@@ -93,7 +93,7 @@ function DashboardPage() {
 
   return (
     <div className='container'>
-      
+      <TopNavBar />
       <div style={{ backgroundColor: '#f2f2f2', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <div style={{ width: '80%' }}>
           <Card 

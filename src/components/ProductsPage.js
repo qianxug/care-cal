@@ -1,6 +1,7 @@
 import { React, ReactDOM, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Button, Breadcrumb, Card, Layout, Menu, Typography } from 'antd';
+import TopNavBar from './TopNavBar';
 
 const PRODUCTS_KEY = 'care-cal.products';
 
@@ -63,6 +64,7 @@ function ProductsPage() {
 
   return (
     <Layout>
+      <TopNavBar />
       <Button onClick={() => setIsEditing(true)}>Add</Button>
       <Menu mode='inline'>
         {products.map((product) => (
