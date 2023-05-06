@@ -42,6 +42,34 @@ export default function RegisterPage() {
             console.log("made user")
             setAlertMessage(`Account Created. Redirecting you to the login page.`)
             setAlertType('success')
+          
+
+            const url = 'http://localhost:8000/api/register';
+            const data = {
+                UID: currentUser.uid,
+                Care: values.care,
+                Name: values.name,
+                Email: values.email,
+                Products: [],
+                Schedule: []
+            };
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                // Handle the response data
+                console.log(result);
+            })
+            .catch(error => {
+                // Handle any errors
+                console.error('Error:', error);
+            });
 
             setTimeout(() => {
                 navigate('/login')
