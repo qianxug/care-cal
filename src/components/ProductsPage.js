@@ -1,58 +1,77 @@
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { React, ReactDOM, useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { Button, Breadcrumb, Card, Layout, Menu, Typography } from 'antd';
 
-const PRODUCTS_KEY = 'care-cal.products'
-const { Header, Content, Footer, Sider } = Layout;
+const PRODUCTS_KEY = 'care-cal.products';
 
-// const items1 = ['1', '2', '3'].map((key) => ({
-//   key,
-//   label: `nav ${key}`,
-// }));
-
-// const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map((icon, index) => {
-//   const key = String(index + 1);
-//   return {
-//     key: `sub${key}`,
-//     icon: React.createElement(icon),
-//     label: `subnav ${key}`,
-//     children: new Array(4).fill(null).map((_, j) => {
-//       const subKey = index * 4 + j + 1;
-//       return {
-//         key: subKey,
-//         label: `option${subKey}`,
-//       };
-//     }),
-//   };
-// });
+function ProductDisplay({ product }) {
+  return (
+    <Card>
+      {product && (
+        <Layout>
+          <p>Amogus with {product.label}</p>
+        </Layout>)}
+    </Card>
+  );
+} 
 
 function ProductsPage() {
-  const [products, setProducts] = useState([{label: "test1"}, {label: "test2"}]);
+  const [products, setProducts] = useState([
+    {
+      id: uuidv4(),
+      label: 'thing #1',
+      type: 'cleanser',
+      notes: 'amogusamogusamogusamogusamogusamogusamogusamogusamogusamogusamogusamogusamogus',
+      routine: [
+        {
+          meridian: 'am',
+          dayOfWeek: 'Wednesday'
+        },
+        {
+          meridian: 'pm',
+          dayOfWeek: 'Friday'
+        },
+      ]
+    },
+    {
+      id: uuidv4(),
+      label: 'thing #2',
+      type: 'moisturizer',
+      notes: 'sugomasugomasugomasugomasugomasugomasugomasugomasugomasugomasugomasugomasugoma',
+      routine: []
+    },
+  ]);
+  const [currProduct, setCurrProduct] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
+  // useEffect(() => {
+  //   const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
     
-    if (Array.isArray(storedProducts)) {
-      setProducts(storedProducts);
-    }
-  }, []);
+  //   if (Array.isArray(storedProducts)) {
+  //     setProducts(storedProducts);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products))
-  }, [products]);
+  // useEffect(() => {
+  //   localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products))
+  // }, [products]);
+
+  function menuItemClickHandler(id) {
+    const clickedProduct = products.find((item) => id === item.id);
+    setCurrProduct(clickedProduct);
+  }
 
   return (
-    <Layout 
-      style={{
-        flexDirection: "row"
-      }}
-    >
-      <p>Hello World!</p>
-      <Sider>
-        <Menu
-          items={products}></Menu>
-      </Sider>
-      <Content></Content>
+    <Layout>
+      <Button onClick={() => setIsEditing(true)}>Add</Button>
+      <Menu mode='inline'>
+        {products.map((product) => (
+          <Menu.Item key={product.id} onClick={() => menuItemClickHandler(product.id)}>
+            {product.label}
+          </Menu.Item>
+        ))}
+      </Menu>
+      {!isEditing && <ProductDisplay product={currProduct} />}
     </Layout>
   );
 };
