@@ -1,18 +1,26 @@
 import { React, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import { DownloadOutlined, EditOutlined,PlusOutlined } from '@ant-design/icons';
 import './DashboardPage.css';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { Button, Tooltip } from 'antd';
+import { Button, Tooltip, Card } from 'antd';
 import moment from 'moment';
+import {useAuth} from "../contexts/AuthContext"
+import { Link } from 'react-router-dom';
+
 
 const ROUTINE_EVENTS_KEY = 'care-cal.routine-events'
 const PRODUCTS_KEY = 'care-cal.routine-events'
+
 
 function DashboardPage() {
   const [routineEvents, setRoutineEvents] = useState([]);
   const [sunscreenEvents, setSunscreenEvents] = useState([]);
   const [products, setProducts] = useState([]);
+  const [size, setSize] = useState('large');
+
+  const {currentUser} = useAuth()
 
   // CHANGE THESE TO UPDATE AS PER USER SELECTION
   const wakeUpTime = '08:00:00';
@@ -85,15 +93,39 @@ function DashboardPage() {
 
   return (
     <div className='container'>
+      
+      <div style={{ backgroundColor: '#f2f2f2', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div style={{ width: '80%' }}>
+          <Card 
+            title='Week View' 
+            bordered={true} 
+            extra={
+              <div>
+                  {/* <Button type="primary" shape = "circle" icon={<PlusOutlined />} size='medium' style={{ marginRight: '10px' }}/> */}
+                  <Link to="/products">
+                    <Button type="primary" shape="circle" icon={<EditOutlined />} size='medium' style={{ marginRight: '10px' }} />
+                  </Link>
+                  <Button type="primary" shape="circle" icon={<DownloadOutlined />} size='medium' />
+              </div>}>
+
+            <FullCalendar
+              plugins={[timeGridPlugin]}
+              initialView="timeGridWeek"
+              events={updatedEvents}
+              eventContent={handleEventsRender}
+              aspectRatio={3.0}
+              headerToolbar={{
+                left: 'title',
+                right: null,
+              }}
+            />
+          </Card>
+        </div>
+      </div>
+
       {/* TEST BUTTONS BELOW, REMOVE THESE LATER */}
       <Button onClick={() => addClickHandler("am", "Monday", "product1")}>AM add</Button>
       <Button onClick={() => addClickHandler("pm", "Tuesday", "product2")}>PM add</Button>
-      <FullCalendar
-        plugins={[timeGridPlugin]}
-        initialView="timeGridWeek"
-        events={updatedEvents}
-        eventContent={handleEventsRender}
-      />
     </div>
   );
 }
