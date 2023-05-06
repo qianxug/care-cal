@@ -3,21 +3,19 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import DashboardPage from './components/DashboardPage';
 import ProductsPage from './components/ProductsPage';
-
-const { Header, Content, Footer } = Layout;
+import NoPage from './components/NoPage';
 
 const App = () => {
   return (
     <div>
-      <p>HELLO</p>
       <BrowserRouter>
-      <Routes>
-        <Route path="/dashboard" component={DashboardPage} />
-        <Route path="/products" component={ProductsPage} />
-      </Routes>
-    </BrowserRouter>
+        <Routes>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="*" element={<NoPage />} />
+        </Routes>
+      </BrowserRouter>
     </div>
-
   );
 };
 

@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 
 function ProductsPage() {
   return (
     <div>
-      <p>Sussy imposter</p>
+      <p>sussy imposter</p>
     </div>
   )
 }
