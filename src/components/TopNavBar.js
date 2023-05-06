@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Layout, Menu, Avatar, Dropdown } from 'antd';
 import { Link } from 'react-router-dom';
 import { LogoutOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import { useAuth } from '../contexts/AuthContext'
 
 const { Header } = Layout;
 
 function TopNavBar() {
   const navigate = useNavigate();
+  const {currentUser, logout } = useAuth()
   const userMenu = (
     <Menu>
       <Menu.Item><b>Name:</b> INSERT</Menu.Item>
@@ -28,8 +30,8 @@ function TopNavBar() {
     );
   }
 
-  function logoutHandler() {
-    console.log("logged out")
+  async function logoutHandler() {
+    await logout()
     navigate('/login');
   }
   

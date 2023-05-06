@@ -50,8 +50,6 @@ export default function RegisterPage() {
                 Care: values.care,
                 Name: values.name,
                 Email: values.email,
-                Products: [],
-                Schedule: []
             };
 
             fetch(url, {
