@@ -68,7 +68,7 @@ function DashboardPage() {
     ));
   
     return (
-      <Tooltip title={<ul>{productsList}</ul>}>
+      <Tooltip title={<ol>{productsList}</ol>}>
         <div>
           <div>{info.timeText}</div>
           <div>{info.event.title}</div>
