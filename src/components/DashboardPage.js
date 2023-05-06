@@ -7,10 +7,12 @@ import { Button, Tooltip } from 'antd';
 import moment from 'moment';
 
 const ROUTINE_EVENTS_KEY = 'care-cal.routine-events'
+const PRODUCTS_KEY = 'care-cal.routine-events'
 
 function DashboardPage() {
   const [routineEvents, setRoutineEvents] = useState([]);
   const [sunscreenEvents, setSunscreenEvents] = useState([]);
+  const [products, setProducts] = useState([]);
 
   // CHANGE THESE TO UPDATE AS PER USER SELECTION
   const wakeUpTime = '08:00:00';
@@ -22,6 +24,8 @@ function DashboardPage() {
     if (Array.isArray(storedRoutineEvents)) {
       setRoutineEvents(storedRoutineEvents);
     }
+
+    setProducts([...JSON.parse(localStorage.getItem(PRODUCTS_KEY))])
   }, []);
 
   useEffect(() => {
@@ -64,7 +68,9 @@ function DashboardPage() {
 
   function handleEventsRender(info) {
     const productsList = info.event.extendedProps.products.map((product) => (
-      <li key={product.name}>{product.name}</li>
+      <li key={product.name}>
+        {product.name}
+      </li>
     ));
   
     return (
@@ -93,10 +99,3 @@ function DashboardPage() {
 }
 
 export default DashboardPage;
-
-// {
-//   title: 'AM skincare',
-//   start: '2023-05-01T8:00:00',
-//   end: '2023-05-01T8:30:00',
-//   notes: '...'
-// },
