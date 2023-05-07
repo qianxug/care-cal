@@ -17,18 +17,64 @@ const PRODUCTS_KEY = 'care-cal.products';
 
 function DashboardPage() {
   const [routineEventsDisplay, setRoutineEventsDisplay] = useState([]);
-  const [sunscreenEventsDisplay, setSunscreenEventsDisplay] = useState([]);   // IMPORTANT FEATURE MUST IMPLEMENT
-  const [products, setProducts] = useState([]);
+  const [sunscreenEventsDisplay, setSunscreenEventsDisplay] = useState([]);
+  const [weatherEventsDisplay, setWeatherEventsDisplay] = useState([]);
+  // const [products, setProducts] = useState([]);
   const [size, setSize] = useState('large');
 
   const {currentUser} = useAuth()
   // const cal = new ICS.VCALENDAR();
   const routineEvents = [];
   const sunscreenEvents = [];
+  const weatherEvents = [];
 
   // CHANGE THESE TO UPDATE AS PER USER SELECTION
   const wakeUpTime = ['06:02:00', '06:00:00', '05:59:00', '05:58:00', '05:57:00', '05:56:00', '05:54:00'];
   const sleepTime = ['20:26:00', '20:27:00', '20:29:00', '20:30:00', '20:31:00', '20:32:00', '20:33:00'];
+  const weatherData = [
+    {
+      date: '2023-05-07',
+      weather: 'light rain',
+      humidity: 65,
+      uvi: 2
+    },
+    {
+      date: '2023-05-08',
+      weather: 'few clouds',
+      humidity: 45,
+      uvi: 7
+    },
+    {
+      date: '2023-05-09',
+      weather: 'light rain',
+      humidity: 42,
+      uvi: 7
+    },
+    {
+      date: '2023-05-10',
+      weather: 'clear skies',
+      humidity: 35,
+      uvi: 7
+    },
+    {
+      date: '2023-05-11',
+      weather: 'few clouds',
+      humidity: 43,
+      uvi: 1
+    },
+    {
+      date: '2023-05-12',
+      weather: 'overcast clouds',
+      humidity: 48,
+      uvi: 1
+    },
+    {
+      date: '2023-05-13',
+      weather: 'light rain',
+      humidity: 54,
+      uvi: 1
+    }
+  ]
 
   async function retrieveProducts() {
     console.log('retrieving on startup')
@@ -72,19 +118,36 @@ function DashboardPage() {
           }
         }
         setRoutineEventsDisplay(routineEvents);
-        remindSunscreenHandler();
-    
       }
+      remindSunscreenHandler();
+      displayWeatherHandler();
     })    
   }, []);
 
-  const updatedEvents = [...routineEventsDisplay, ...sunscreenEventsDisplay];
+  const updatedEvents = [...routineEventsDisplay, ...sunscreenEventsDisplay, ...weatherEventsDisplay];
 
-  const testEvents = {
-    start: [2023, 5, 7, 2, 30],
-    duration: { hours: 1, minutes: 0 },
-    title: "Testing",
-    description: "sussy mongoose",
+  function displayWeatherHandler() {
+    for (let i = 0; i < 7; i++) {
+      weatherEvents.push(
+        {
+          title: "Weather: " + weatherData[i].weather,
+          start: weatherData[i].date,
+          allDay: true,
+        },
+        {
+          title: "Humidity: " + weatherData[i].humidity + '%',
+          start: weatherData[i].date,
+          allDay: true,
+        },
+        {
+          title: "UV index: " + weatherData[i].uvi,
+          start: weatherData[i].date,
+          allDay: true,
+        },
+      )
+    }
+
+    setWeatherEventsDisplay(weatherEvents);
   }
 
   function remindSunscreenHandler() {
@@ -155,7 +218,9 @@ function DashboardPage() {
       ));
 
       return (
-        <Tooltip title={<ol>{productsList}</ol>}>
+        <Tooltip 
+          title={<ol>{productsList}</ol>}
+        >
           <div>
             <div>{info.timeText}</div>
             <div>{info.event.title}</div>
@@ -163,15 +228,31 @@ function DashboardPage() {
         </Tooltip>
       )
     }
-  
-    return (
-      <Tooltip title={"do you want to die? i think not! so wear the damn sunscreen!"}> 
+
+    else if (info.event.title === '(Re)apply sunscreen') {
+      return (
+        <div>
+          <Tooltip 
+            title={"do you want to die? i think not! so wear the damn sunscreen!"}> 
+            <div>
+              <div>{info.timeText}</div>
+              <div>{info.event.title}</div>
+            </div>
+          </Tooltip>
+        </div>
+      );
+    }
+
+    else {
+      return (
+        <Tooltip> 
         <div>
           <div>{info.timeText}</div>
           <div>{info.event.title}</div>
         </div>
       </Tooltip>
-    );
+      )
+    }
   }
 
   function exportClickHandler() {
@@ -258,9 +339,6 @@ function DashboardPage() {
           </Card>
         </div>
       </div>
-      {/* TEST BUTTONS BELOW, REMOVE THESE LATER */}
-      {/* <Button onClick={() => addClickHandler("am", "Monday", "product1")}>AM add</Button>
-      <Button onClick={() => addClickHandler("pm", "Tuesday", "product2")}>PM add</Button> */}
     </div>
   );
 }
