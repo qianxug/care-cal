@@ -10,9 +10,8 @@ import { Link } from 'react-router-dom';
 import TopNavBar from './TopNavBar';
 
 
-const ROUTINE_EVENTS_KEY = 'care-cal.routine-events'
-const PRODUCTS_KEY = 'care-cal.routine-events'
-
+const ROUTINE_EVENTS_KEY = 'care-cal.routine-events';
+const PRODUCTS_KEY = 'care-cal.products';
 
 function DashboardPage() {
   const [routineEvents, setRoutineEvents] = useState([]);
@@ -29,48 +28,72 @@ function DashboardPage() {
   useEffect(() => {
     const storedRoutineEvents = JSON.parse(localStorage.getItem(ROUTINE_EVENTS_KEY));
     
-    if (Array.isArray(storedRoutineEvents)) {
-      setRoutineEvents(storedRoutineEvents);
-    }
+    // if (Array.isArray(storedRoutineEvents)) {
+    //   setRoutineEvents(storedRoutineEvents);
+    // }
 
-    setProducts([...JSON.parse(localStorage.getItem(PRODUCTS_KEY))])
+    const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
+
+    console.log("stored prods:")
+    console.log(storedProducts)
+
+    for (var i = 0; i < storedProducts.length; i++) {
+      for (var j = 0; j < storedProducts[i].routine.length; j++) {
+        console.log(storedProducts[i].routine[j].meridian + "    "   + storedProducts[i].routine[j].dayOfWeek + "    " + storedProducts[i].label + "   " + storedProducts[i].type);
+        addClickHandler(storedProducts[i].routine[j].meridian, storedProducts[i].routine[j].dayOfWeek, storedProducts[i].label, storedProducts[i].type);
+        setTimeout(() => {console.log("hello")}, 1000)
+      }
+    }
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem(ROUTINE_EVENTS_KEY, JSON.stringify(routineEvents))
-  }, [routineEvents]);
+  // useEffect(() => {
+  //   localStorage.setItem(ROUTINE_EVENTS_KEY, JSON.stringify(routineEvents))
+  // }, [routineEvents]);
 
   const updatedEvents = [...routineEvents, ...sunscreenEvents];
 
-  function addClickHandler(meridian, dayOfWeek, productName) {
+  function addClickHandler(meridian, dayOfWeek, productName, productType) {
     const dayNumber = moment(dayOfWeek, 'dddd').isoWeekday();
     const targetDate = moment().subtract(moment().day(), 'days').add(dayNumber, 'days').format('YYYY-MM-DD');
     const targetDateTime = meridian === 'am' ? targetDate +  'T' + wakeUpTime : targetDate + 'T' + sleepTime;
+
+
     
     const newRoutineEvents = [...routineEvents];
-    const result = newRoutineEvents.find((item) => targetDateTime === item.start);
+    const result = newRoutineEvents.find((item) => {
+      return targetDateTime == item.start
+    });
 
-    if (result) { 
+    console.log("newRoutineEvents begin are")
+    console.log(newRoutineEvents)
+    console.log("result is", result)
+
+    if (result) {
+      console.log("in if")
+
       result.products.push({
         name: productName,
-        type: 'default'
+        type: productType
       });
     }
     
     else {
+      console.log("in else")
+
       newRoutineEvents.push({
         title: 'bleh',
         start: targetDateTime,
         end: moment(targetDateTime).add(60, 'minutes').format('YYYY-MM-DDTHH:mm:ss'),
         products: [{
           name: productName,
-          type: 'default'
+          type: productType
         }]
       })
-    }
+    }    
 
+    // console.log("newRoutineEvents end are")
+    // console.log(newRoutineEvents);
     setRoutineEvents(newRoutineEvents);
-
     console.log(newRoutineEvents);
   }
 
