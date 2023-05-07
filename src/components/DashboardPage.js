@@ -14,6 +14,7 @@ import TopNavBar from './TopNavBar';
 
 const PRODUCTS_KEY = 'care-cal.products';
 
+
 function DashboardPage() {
   const [routineEventsDisplay, setRoutineEventsDisplay] = useState([]);
   const [sunscreenEventsDisplay, setSunscreenEventsDisplay] = useState([]);   // IMPORTANT FEATURE MUST IMPLEMENT
@@ -29,21 +30,52 @@ function DashboardPage() {
   const wakeUpTime = ['06:02:00', '06:00:00', '05:59:00', '05:58:00', '05:57:00', '05:56:00', '05:54:00'];
   const sleepTime = ['20:26:00', '20:27:00', '20:29:00', '20:30:00', '20:31:00', '20:32:00', '20:33:00'];
 
-  useEffect(() => {
-    const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
-
-    for (let i = 0; i < storedProducts.length; i++) {
-      for (let j = 0; j < storedProducts[i].routine.length; j++) {
-        addClickHandler(storedProducts[i].routine[j].meridian, storedProducts[i].routine[j].dayOfWeek, storedProducts[i].label, storedProducts[i].type);
+  async function retrieveProducts() {
+    console.log('retrieving on startup')
+    const url = 'http://localhost:8000/api/products/request';
+    const data = {
+      Email: localStorage.getItem('CARE_CAL_EMAIL'),
+    };
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (response) {
+        const res = await response.json()
+        return res
+      } else {
+        console.error('Error:', response.status);
       }
+    } catch (error) {
+      console.error('Error:', error);
     }
+  }
+  
 
-    console.log("routine events here")
-    console.log(routineEvents)
-
-    setRoutineEventsDisplay(routineEvents);
-
-    remindSunscreenHandler();
+  useEffect(() => {
+    console.log('startup')
+    const prods = retrieveProducts()
+    prods.then((storedProducts)=> {
+      console.log("storedProducts:", storedProducts)
+      if (Array.isArray(storedProducts)) {
+        // setProducts(storedProducts);
+        console.log('create cal events')
+        for (let i = 0; i < storedProducts.length; i++) {
+          for (let j = 0; j < storedProducts[i].routine.length; j++) {
+            addClickHandler(storedProducts[i].routine[j].meridian, storedProducts[i].routine[j].dayOfWeek, storedProducts[i].label, storedProducts[i].type);
+          }
+        }
+        setRoutineEventsDisplay(routineEvents);
+        remindSunscreenHandler();
+    
+      }
+    })    
   }, []);
 
   const updatedEvents = [...routineEventsDisplay, ...sunscreenEventsDisplay];
@@ -82,8 +114,6 @@ function DashboardPage() {
       }
     }
 
-    console.log(sunscreenEvents)
-
     setSunscreenEventsDisplay(sunscreenEvents)
   }
 
@@ -94,9 +124,7 @@ function DashboardPage() {
 
     const result = routineEvents.find((item) => targetDateTime === item.start);
 
-    console.log(dayOfWeek + ":")
-    console.log(dayNumber)
-    console.log(targetDateTime)
+
 
     if (result) {
       result.products.push({
