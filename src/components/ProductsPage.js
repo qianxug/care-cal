@@ -2,6 +2,8 @@ import { React, ReactDOM, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Button, Form, Card, Layout, Menu, Input, List, Typography, Tag, Select } from 'antd';
 import TopNavBar from './TopNavBar';
+import { Link } from 'react-router-dom';
+import { DeleteOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
 
 const {Option} = Select;
 const PRODUCTS_KEY = 'care-cal.products';
@@ -20,33 +22,45 @@ function ProductDisplay({ product, deleteClickHandler }) {
 
       const dayAcronym = item.substring(0, 3);
 
+      // if (hasAm && hasPm)
+      //   return <Tag key={item} bordered={false} style={{ background: 'linear-gradient(to right, pink 50%, cyan 50%)'}}>{dayAcronym}</Tag>
+      
+      // else if (hasAm)
+      //   return <Tag key={item} bordered={false} style={{ background: 'pink'}}>{dayAcronym}</Tag>
+
+      // else if (hasPm)
+      //   return <Tag key={item} bordered={false} style={{ background: 'cyan'}}>{dayAcronym}</Tag>
+      
+      // else
+      //   return <Tag>{dayAcronym}</Tag>
       if (hasAm && hasPm)
-        return <Tag key={item} style={{ background: 'linear-gradient(to right, pink 50%, cyan 50%)'}}>{dayAcronym}</Tag>
+        return <Tag key={item} bordered={false} color="green">{dayAcronym}</Tag>
       
       else if (hasAm)
-        return <Tag key={item} style={{ background: 'pink'}}>{dayAcronym}</Tag>
+        return <Tag key={item} bordered={false} color="yellow">{dayAcronym}</Tag>
 
       else if (hasPm)
-        return <Tag key={item} style={{ background: 'cyan'}}>{dayAcronym}</Tag>
+        return <Tag key={item} bordered={false} color="geekblue">{dayAcronym}</Tag>
       
       else
-        return <Tag>{dayAcronym}</Tag>
+        return <Tag bordered={false}>{dayAcronym}</Tag>
     })
   }
 
   return (
-    <Card style={{
-      backgroundColor: "lightgray"
-    }}>
+    <Card 
+      style={{backgroundColor: "white" }}
+      bordered={false}
+    >
+      
       {product && (
-        <Layout>
+        <>
           <div style={{
-            backgroundColor: "lightgray",
+            backgroundColor: "white",
             display: "flex",
             justifyContent: "flex-end"
           }}>
-            <Button>Edit</Button>
-            <Button onClick={() => deleteClickHandler(product)}>Delete</Button>
+            <Button type="primary" shape="circle" icon={<DeleteOutlined />} size='medium' onClick={() => deleteClickHandler(product)} />
           </div>  
           <List>
             <List.Item>
@@ -58,8 +72,8 @@ function ProductDisplay({ product, deleteClickHandler }) {
             <List.Item>
               <b>Routine:</b>
                 <br />
-                <Tag color='pink'>AM</Tag>
-                <Tag color='cyan'>PM</Tag>
+                {/* <Tag color='pink'>AM</Tag>
+                <Tag color='cyan'>PM</Tag> */}
               <div style={{display: 'block'}}>
                 {displayDaysOfWeek()}
               </div>
@@ -69,7 +83,7 @@ function ProductDisplay({ product, deleteClickHandler }) {
               <p>{product.notes}</p>
             </List.Item>
           </List>
-        </Layout>)}
+        </>)}
     </Card>
   );
 }
@@ -86,62 +100,136 @@ function ProductEntry({ product, submitHandler }) {
                           "Sunday AM", "Sunday PM"];
   
   return (
-    <Form onFinish={submitHandler}>
-      <Form.Item
-        name="name"
-        label="Name"
+    
+      <Card
+        bordered={false}
       >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="type"
-        label="Type"
-      >
-        <Select>
-          <Option value='primary cleanser'>Primary cleanser</Option>
-          <Option value='secondary cleanser'>Secondary cleanser</Option>
-          <Option value='exfoliant'>Exfoliant</Option>
-          <Option value='retinol'>Retinol</Option>
-          <Option value='moisturizer'>Moisturizer</Option>
-          <Option value='sunscreen'>Sunscreen</Option>
-          <Option value='serum'>Serum</Option>
-        </Select>          
-      </Form.Item>
-      <Form.Item
-        name="routine"
-        label="Routine"
-      >
-        <Select mode="multiple">
-        {routineOptions.map((item) => (
-          <Option key={item} value={item}>
-            {item}
-          </Option>
-        ))}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        name="notes"
-        label="Notes"
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item>
-        <Button 
-          type="primary" 
-          htmlType='submit' 
-          disabled={loading}
-        >
-          Save
-        </Button>
-      </Form.Item>
-    </Form>
+        <Form onFinish={submitHandler}>
+          <Form.Item
+            name="name"
+            label="Name"
+            labelCol={{ span: 4 }} 
+            wrapperCol={{ span: 22 }}
+            rules={[{required:true}]}
+            hasFeedback
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="type"
+            label="Type"
+            labelCol={{ span: 4 }} 
+            wrapperCol={{ span: 22 }}
+            rules={[{required:true}]}
+            hasFeedback
+          >
+            <Select>
+              <Option value='Primary cleanser'>Primary cleanser</Option>
+              <Option value='Secondary cleanser'>Secondary cleanser</Option>
+              <Option value='Exfoliant'>Exfoliant</Option>
+              <Option value='Retinol'>Retinol</Option>
+              <Option value='Moisturizer'>Moisturizer</Option>
+              <Option value='Sunscreen'>Sunscreen</Option>
+              <Option value='Serum'>Serum</Option>
+            </Select>          
+          </Form.Item>
+          <Form.Item
+            name="routine"
+            label="Routine"
+            labelCol={{ span: 4 }} 
+            wrapperCol={{ span: 22 }}
+            rules={[{required:true}]}
+            hasFeedback
+          >
+            <Select mode="multiple">
+            {routineOptions.map((item) => (
+              <Option key={item} value={item}>
+                {item}
+              </Option>
+            ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="notes"
+            label="Notes"
+            labelCol={{ span: 4 }} 
+            wrapperCol={{ span: 22 }}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType = 'Submit' disabled={loading}>Save</Button>
+          </Form.Item>
+        </Form>
+      </Card>
+
   );
 }
+
 
 function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [currProduct, setCurrProduct] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+
+  async function retrieveProducts() {
+    const url = 'http://localhost:8000/api/products/request';
+    const data = {
+      Email: localStorage.getItem('CARE_CAL_EMAIL'),
+    };
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (response) {
+        const result = await response.json();
+        return result.Products
+      } else {
+        console.error('Error:', response.status);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    return null
+  }
+
+  async function updateProducts(products) {
+    console.log("in update")
+    const url = 'http://localhost:8000/api/products/load';
+    const data = {
+      Email: localStorage.getItem('CARE_CAL_EMAIL'),
+      Prods: products,
+    };
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (response) {
+        const result = await response.json();
+        console.log(response)
+        return result.product
+      } else {
+        console.error('Error:', response.status);
+        
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    return null
+  }
+
 
   useEffect(() => {
     const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
@@ -149,10 +237,13 @@ function ProductsPage() {
     if (Array.isArray(storedProducts)) {
       setProducts(storedProducts);
     }
+   
   }, []);
 
   useEffect(() => {
     localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products))
+    console.log(products)
+   
   }, [products]);
 
   function menuItemClickHandler(id) {
@@ -161,15 +252,13 @@ function ProductsPage() {
     setCurrProduct(clickedProduct);
   }
 
-  function addChangeProductHandler(id) {
-    // TO DO AT SOME POINT
-  }
-
   function deleteClickHandler(product) {
     const newProducts = products.filter((item) => item.label !== product.label);
 
     setProducts(newProducts);
     setCurrProduct(null);
+
+    updateProducts(newProducts)
   }
 
   function submitHandler(values) {
@@ -193,22 +282,54 @@ function ProductsPage() {
 
     setProducts([...newProducts, newProduct]);
     setIsEditing(false);
+
+    updateProducts([...newProducts, newProduct])
   }
 
   return (
-    <Layout>
+    <>
       <TopNavBar />
-      <Button onClick={() => setIsEditing(true)}>Add</Button>
-      <Menu mode='inline'>
-        {products.map((product) => (
-          <Menu.Item key={product.id} onClick={() => menuItemClickHandler(product.id)}>
-            {product.label}
-          </Menu.Item>
-        ))}
-      </Menu>
-      {!isEditing && <ProductDisplay product={currProduct} deleteClickHandler={deleteClickHandler}/>}
-      {isEditing && <ProductEntry product={currProduct} submitHandler={submitHandler}/>}
-    </Layout>
+      
+      <div style={{ backgroundColor: '#f2f2f2', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh' }}>
+        <div style={{  display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px'}}>
+          <div style={{ aspectRatio: '1/1' }}>
+            <Card 
+              title="Products" 
+              style={{ height: '600px', width: '500px'}} 
+              hoverable 
+              extra = {
+                    <div>
+                        <Button type="primary" shape="circle" icon={<PlusOutlined />} size='medium' onClick={() => setIsEditing(true)} />
+                    </div>
+                  }>
+              <Menu 
+                mode='inline'
+                defaultSelectedKeys={['1']}
+                
+              >
+                {products.map((product) => (
+                  <Menu.Item key={product.id} onClick={() => menuItemClickHandler(product.id)}>
+                    {product.label}
+                  </Menu.Item>
+                ))}
+              </Menu>
+            </Card>
+          </div>
+          <div style={{ aspectRatio: '1/1' }}>
+            <Card style={{ height: '600px', width: '500px' }} hoverable>
+              {!isEditing && <ProductDisplay product={currProduct} deleteClickHandler={deleteClickHandler}/>}
+              {isEditing && (
+                <>
+                <h3>Add a product</h3>
+                <ProductEntry product={currProduct} submitHandler={submitHandler}/>
+                </>)}
+            </Card>
+          </div>
+        </div>
+      </div>
+      
+      
+    </>
   );
 };
 

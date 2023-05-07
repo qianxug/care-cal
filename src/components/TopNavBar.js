@@ -91,7 +91,7 @@ function TopNavBar() {
         <Menu 
           theme="light" 
           mode="horizontal"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={['currenPath']}
           style={{flexGrow: 1}}
         >
          
@@ -117,7 +117,7 @@ function TopNavBar() {
           alignItems: "center"
           }}>
         <Dropdown overlay={userMenu} placement="bottomRight">
-            <Avatar style={{ cursor: 'pointer' }} icon={<UserOutlined />} />
+            <Avatar style={{ cursor: 'pointer', color:'white',backgroundColor:"#1677ff" }} icon={<UserOutlined />} />
         </Dropdown>
         </Layout>
       {/* </Layout> */}

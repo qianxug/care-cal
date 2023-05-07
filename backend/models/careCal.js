@@ -5,13 +5,7 @@ const userSchema = new Schema({
     Care: Boolean,
     Name: String,
     Email: String,
-    Products: {
-        id: String,
-        label: String,
-        type: String,
-        notes: String,
-        routine: []
-    }
+    Products: []
 });
 
 const User = mongoose.model('User', userSchema)

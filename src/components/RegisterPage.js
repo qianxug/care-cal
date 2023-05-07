@@ -49,6 +49,7 @@ export default function RegisterPage() {
                 Care: values.care,
                 Name: values.name,
                 Email: values.email,
+                Products: []
             };
 
             await fetch(url, {

@@ -95,6 +95,7 @@ function DashboardPage() {
         </div>
         <div style={{ width: '80%' }}>
           <Card 
+            hoverable
             title='Week View' 
             bordered={true} 
             extra={

@@ -38,6 +38,7 @@ app.post('/api/register', (req, res) => {
 });
 
 app.post('/api/login', (req, res) => {
+    console.log('loggin user')
     const { Email } = req.body; 
 
     User.findOne({ Email })
@@ -50,12 +51,29 @@ app.post('/api/login', (req, res) => {
       })
   });
 
-app.post('/api/products', (req, res) => {
+app.post('/api/products/request', (req, res) => {
+    console.log("entered retrieval products")
     // Handle the incoming POST request
-    const data = req.body; // Access the data sent from the frontend
-  
-    // Perform operations with the data (e.g., save to MongoDB using Mongoose)
-  
-    // Send a response back to the frontend
-    res.json({ message: 'Data received and processed successfully' });
+    const {Email} = req.body; // Access the data sent from the frontend
+
+    User.findOne({Email})
+    .then((user) => {
+      if(user) {
+        console.log(user)
+        res.json(user);
+      } else {
+        res.status(404).json({error:'User not found'})
+      }
+    })
+  });
+
+  app.post('/api/products/load', (req, res) => {
+    // Handle the incoming POST request
+    console.log("entered update products")
+    const {Email, Prods} = req.body; // Access the data sent from the frontend
+
+    User.updateOne({Email: Email }, {Products: Prods})
+    .then((result) => {
+        res.json(result);
+      })
   });
