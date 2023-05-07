@@ -59,10 +59,8 @@ app.post('/api/products/request', (req, res) => {
     User.findOne({Email})
     .then((user) => {
       if(user) {
-        console.log(user)
-        res.json(user);
-      } else {
-        res.status(404).json({error:'User not found'})
+        console.log(user.Products)
+        res.send(user.Products);
       }
     })
   });

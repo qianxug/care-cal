@@ -14,6 +14,7 @@ import TopNavBar from './TopNavBar';
 
 const PRODUCTS_KEY = 'care-cal.products';
 
+
 function DashboardPage() {
   const [routineEventsDisplay, setRoutineEventsDisplay] = useState([]);
   const [sunscreenEventsDisplay, setSunscreenEventsDisplay] = useState([]);
@@ -75,19 +76,52 @@ function DashboardPage() {
     }
   ]
 
-  useEffect(() => {
-    const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
-
-    for (let i = 0; i < storedProducts.length; i++) {
-      for (let j = 0; j < storedProducts[i].routine.length; j++) {
-        addClickHandler(storedProducts[i].routine[j].meridian, storedProducts[i].routine[j].dayOfWeek, storedProducts[i].label, storedProducts[i].type);
+  async function retrieveProducts() {
+    console.log('retrieving on startup')
+    const url = 'http://localhost:8000/api/products/request';
+    const data = {
+      Email: localStorage.getItem('CARE_CAL_EMAIL'),
+    };
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (response) {
+        const res = await response.json()
+        return res
+      } else {
+        console.error('Error:', response.status);
       }
+    } catch (error) {
+      console.error('Error:', error);
     }
+  }
+  
 
-    setRoutineEventsDisplay(routineEvents);
-
-    displayWeatherHandler();
-    remindSunscreenHandler();
+  useEffect(() => {
+    console.log('startup')
+    const prods = retrieveProducts()
+    prods.then((storedProducts)=> {
+      console.log("storedProducts:", storedProducts)
+      if (Array.isArray(storedProducts)) {
+        // setProducts(storedProducts);
+        console.log('create cal events')
+        for (let i = 0; i < storedProducts.length; i++) {
+          for (let j = 0; j < storedProducts[i].routine.length; j++) {
+            addClickHandler(storedProducts[i].routine[j].meridian, storedProducts[i].routine[j].dayOfWeek, storedProducts[i].label, storedProducts[i].type);
+          }
+        }
+        setRoutineEventsDisplay(routineEvents);
+      }
+      remindSunscreenHandler();
+      displayWeatherHandler();
+    })    
   }, []);
 
   const updatedEvents = [...routineEventsDisplay, ...sunscreenEventsDisplay, ...weatherEventsDisplay];
@@ -152,6 +186,8 @@ function DashboardPage() {
     const targetDateTime = meridian === 'am' ? targetDate +  'T' + wakeUpTime[dayNumber] : targetDate + 'T' + sleepTime[dayNumber];
 
     const result = routineEvents.find((item) => targetDateTime === item.start);
+
+
 
     if (result) {
       result.products.push({

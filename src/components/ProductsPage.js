@@ -173,6 +173,7 @@ function ProductsPage() {
   const [isEditing, setIsEditing] = useState(false);
 
   async function retrieveProducts() {
+    console.log('retrieving on startup')
     const url = 'http://localhost:8000/api/products/request';
     const data = {
       Email: localStorage.getItem('CARE_CAL_EMAIL'),
@@ -188,15 +189,14 @@ function ProductsPage() {
       });
   
       if (response) {
-        const result = await response.json();
-        return result.Products
+        const res = await response.json()
+        return res
       } else {
         console.error('Error:', response.status);
       }
     } catch (error) {
       console.error('Error:', error);
     }
-    return null
   }
 
   async function updateProducts(products) {
@@ -218,7 +218,6 @@ function ProductsPage() {
   
       if (response) {
         const result = await response.json();
-        console.log(response)
         return result.product
       } else {
         console.error('Error:', response.status);
@@ -232,17 +231,20 @@ function ProductsPage() {
 
 
   useEffect(() => {
-    const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
-    
-    if (Array.isArray(storedProducts)) {
-      setProducts(storedProducts);
-    }
-   
+    const prods = retrieveProducts()
+    prods.then((res)=> {
+      console.log("final:", res)
+      if (Array.isArray(res)) {
+        setProducts(res);
+      }
+    })
+
+    // console.log("prods:", prods)
+    // const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
   }, []);
 
   useEffect(() => {
     localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products))
-    console.log(products)
    
   }, [products]);
 
