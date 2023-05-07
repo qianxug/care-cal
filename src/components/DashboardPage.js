@@ -14,41 +14,30 @@ const ROUTINE_EVENTS_KEY = 'care-cal.routine-events';
 const PRODUCTS_KEY = 'care-cal.products';
 
 function DashboardPage() {
-  const [routineEvents, setRoutineEvents] = useState([]);
+  const [routineEventsDisplay, setRoutineEventsDisplay] = useState([]);
   const [sunscreenEvents, setSunscreenEvents] = useState([]);   // IMPORTANT FEATURE MUST IMPLEMENT
   const [products, setProducts] = useState([]);
   const [size, setSize] = useState('large');
 
   const {currentUser} = useAuth()
+  const routineEvents = [];
 
   // CHANGE THESE TO UPDATE AS PER USER SELECTION
   const wakeUpTime = '08:00:00';
-  const sleepTime = '23:00:00';
+  const sleepTime = '21:00:00';
 
   useEffect(() => {
-    const storedRoutineEvents = JSON.parse(localStorage.getItem(ROUTINE_EVENTS_KEY));
-    
-    // if (Array.isArray(storedRoutineEvents)) {
-    //   setRoutineEvents(storedRoutineEvents);
-    // }
-
     const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
-
-    console.log("stored prods:")
-    console.log(storedProducts)
 
     for (var i = 0; i < storedProducts.length; i++) {
       for (var j = 0; j < storedProducts[i].routine.length; j++) {
         console.log(storedProducts[i].routine[j].meridian + "    "   + storedProducts[i].routine[j].dayOfWeek + "    " + storedProducts[i].label + "   " + storedProducts[i].type);
         addClickHandler(storedProducts[i].routine[j].meridian, storedProducts[i].routine[j].dayOfWeek, storedProducts[i].label, storedProducts[i].type);
-        setTimeout(() => {console.log("hello")}, 1000)
       }
     }
-  }, []);
 
-  // useEffect(() => {
-  //   localStorage.setItem(ROUTINE_EVENTS_KEY, JSON.stringify(routineEvents))
-  // }, [routineEvents]);
+    setRoutineEventsDisplay(routineEvents);
+  }, []);
 
   const updatedEvents = [...routineEvents, ...sunscreenEvents];
 
@@ -57,31 +46,18 @@ function DashboardPage() {
     const targetDate = moment().subtract(moment().day(), 'days').add(dayNumber, 'days').format('YYYY-MM-DD');
     const targetDateTime = meridian === 'am' ? targetDate +  'T' + wakeUpTime : targetDate + 'T' + sleepTime;
 
-
-    
-    const newRoutineEvents = [...routineEvents];
-    const result = newRoutineEvents.find((item) => {
-      return targetDateTime == item.start
-    });
-
-    console.log("newRoutineEvents begin are")
-    console.log(newRoutineEvents)
-    console.log("result is", result)
+    const result = routineEvents.find((item) => targetDateTime === item.start);
 
     if (result) {
-      console.log("in if")
-
       result.products.push({
         name: productName,
         type: productType
-      });
+      })
     }
-    
-    else {
-      console.log("in else")
 
-      newRoutineEvents.push({
-        title: 'bleh',
+    else {
+      routineEvents.push({
+        title: meridian === 'am' ? 'AM skincare' : "PM skincare",
         start: targetDateTime,
         end: moment(targetDateTime).add(60, 'minutes').format('YYYY-MM-DDTHH:mm:ss'),
         products: [{
@@ -89,12 +65,7 @@ function DashboardPage() {
           type: productType
         }]
       })
-    }    
-
-    // console.log("newRoutineEvents end are")
-    // console.log(newRoutineEvents);
-    setRoutineEvents(newRoutineEvents);
-    console.log(newRoutineEvents);
+    }
   }
 
   function handleEventsRender(info) {
@@ -138,7 +109,7 @@ function DashboardPage() {
             <FullCalendar
               plugins={[timeGridPlugin]}
               initialView="timeGridWeek"
-              events={updatedEvents}
+              events={routineEventsDisplay}
               eventContent={handleEventsRender}
               aspectRatio={3.0}
               headerToolbar={{
