@@ -25,26 +25,26 @@ function DashboardPage() {
   const wakeUpTime = '08:00:00';
   const sleepTime = '23:00:00';
 
-  useEffect(() => {
-    const storedRoutineEvents = JSON.parse(localStorage.getItem(ROUTINE_EVENTS_KEY));
+  // useEffect(() => {
+  //   const storedRoutineEvents = JSON.parse(localStorage.getItem(ROUTINE_EVENTS_KEY));
     
-    // if (Array.isArray(storedRoutineEvents)) {
-    //   setRoutineEvents(storedRoutineEvents);
-    // }
+  //   // if (Array.isArray(storedRoutineEvents)) {
+  //   //   setRoutineEvents(storedRoutineEvents);
+  //   // }
 
-    const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
+  //   const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
 
-    console.log("stored prods:")
-    console.log(storedProducts)
+  //   console.log("stored prods:")
+  //   console.log(storedProducts)
 
-    for (var i = 0; i < storedProducts.length; i++) {
-      for (var j = 0; j < storedProducts[i].routine.length; j++) {
-        console.log(storedProducts[i].routine[j].meridian + "    "   + storedProducts[i].routine[j].dayOfWeek + "    " + storedProducts[i].label + "   " + storedProducts[i].type);
-        addClickHandler(storedProducts[i].routine[j].meridian, storedProducts[i].routine[j].dayOfWeek, storedProducts[i].label, storedProducts[i].type);
-        setTimeout(() => {console.log("hello")}, 1000)
-      }
-    }
-  }, []);
+  //   for (var i = 0; i < storedProducts.length; i++) {
+  //     for (var j = 0; j < storedProducts[i].routine.length; j++) {
+  //       console.log(storedProducts[i].routine[j].meridian + "    "   + storedProducts[i].routine[j].dayOfWeek + "    " + storedProducts[i].label + "   " + storedProducts[i].type);
+  //       addClickHandler(storedProducts[i].routine[j].meridian, storedProducts[i].routine[j].dayOfWeek, storedProducts[i].label, storedProducts[i].type);
+  //       setTimeout(() => {console.log("hello")}, 1000)
+  //     }
+  //   }
+  // }, []);
 
   // useEffect(() => {
   //   localStorage.setItem(ROUTINE_EVENTS_KEY, JSON.stringify(routineEvents))
@@ -118,7 +118,7 @@ function DashboardPage() {
     <div className='container'>
       <TopNavBar />
       <div style={{ backgroundColor: '#f2f2f2', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', position: 'relative' }}>
-        <div style={{ position: 'absolute', top: '10px', left: '10px' }}>
+        <div style={{ position: 'absolute', top: '10px', left: '50%', transform: 'translateX(-50%)', textAlign: 'center' }}>
           <h2>Welcome {localStorage.getItem('CARE_CAL_NAME')}</h2>
           <h>Update your location for weather updates and begin scheduling in the products tab</h>
         </div>

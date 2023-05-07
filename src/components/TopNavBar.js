@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Layout, Menu, Avatar, Dropdown,TimePicker } from 'antd';
 import { Link } from 'react-router-dom';
 import { LogoutOutlined, ShoppingCartOutlined, UserOutlined, EnvironmentOutlined } from '@ant-design/icons';
@@ -14,6 +14,8 @@ const onChange = (time, timeString) => {
 function TopNavBar() {
   const navigate = useNavigate();
   const {currentUser, logout } = useAuth()
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   const id = localStorage.getItem('CARE_CAL_ID'); 
   const email = localStorage.getItem('CARE_CAL_EMAIL');  
@@ -28,14 +30,6 @@ function TopNavBar() {
       <Menu.Item><b>Email:</b> {email}</Menu.Item>
       <Menu.Item><b>Default wake up time:</b> 8:00 AM</Menu.Item>
       <Menu.Item><b>Default sleep time:</b> 11:00 PM</Menu.Item>
-      <Menu.Item>
-        <TimePicker 
-          use12Hours 
-          format="h:mm a" 
-          onChange={onChange}
-          getPopupContainer={getPopupContainer}
-        />
-      </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="weather" icon={<EnvironmentOutlined />} onClick={() => weatherHandler()}>Update Weather Data</Menu.Item>
       <Menu.Item key="signout" icon={<LogoutOutlined />} onClick={() => logoutHandler()}>Sign Out</Menu.Item>
@@ -93,13 +87,14 @@ function TopNavBar() {
       justifyContent: "start"
     }}>
       {/* <Layout > */}
-        <img src='public\icons\navbar-topleft-logo.png' alt='logo'></img>
+        {/* <img src='public\icons\navbar-topleft-logo.png' alt='logo'></img> */}
         <Menu 
           theme="light" 
           mode="horizontal"
           defaultSelectedKeys={['1']}
           style={{flexGrow: 1}}
         >
+         
           <Menu.Item 
             key="1" 
             icon={<UserOutlined />}
