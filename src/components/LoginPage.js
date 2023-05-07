@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { Form, Input, Button, Card, Alert } from 'antd';
 import { useAuth, login } from '../contexts/AuthContext'
 import { useNavigate, useHistory } from 'react-router-dom';
+import weather from "../weather"
 
 
 const formItemLayout = {
@@ -34,21 +35,45 @@ export default function LoginPage() {
     // const history = useHistory()
 
     const submitHandler = async (values) => {
-        console.log('Finish:', values);
-        console.log(values.name)
 
         try {
             setAlertMessage('')
             setLoading(true)
             await login(values.email, values.password)
-            console.log("made user")
+            const url = 'http://localhost:8000/api/login';
+            const data = {
+              Email: values.email,
+            };
+        
+            await fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+              let id = result._id
+              let email = result.Email
+              let name = result.Name
+              
+              console.log(result)
+              localStorage.setItem('CARE_CAL_ID', id)
+              localStorage.setItem('CARE_CAL_EMAIL', email)
+              localStorage.setItem('CARE_CAL_NAME', name)
+            })
+            .catch(error => {
+    
+              console.error('Error:', error);
+            });
+
+            
             setAlertMessage("Success! Redirecting you to the dashboard.")
             setAlertType('success')
-
-
             setTimeout(() => {
                 navigate('/dashboard')
-            }, 1000)
+            }, 1500)
             
         }
         catch {

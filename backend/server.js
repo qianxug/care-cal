@@ -22,14 +22,11 @@ mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
     .catch((error) => console.log(error));
    
 //----------------------------------------------------------------------------------//
-// Middleware
 app.use(bodyParser.json());
 app.use(cors());
 
-// Routes
 app.post('/api/register', (req, res) => {
-     // Handle the incoming POST request
-    const data = req.body; // Access the data sent from the frontend
+    const data = req.body; 
     console.log(data)
 
     const user = new User(data)
@@ -38,10 +35,20 @@ app.post('/api/register', (req, res) => {
         .then((result)=> {
             res.send(result);
         })
-        .catch((err) => {
-            res.send(err)
-        })
 });
+
+app.post('/api/login', (req, res) => {
+    const { Email } = req.body; 
+
+    User.findOne({ Email })
+      .then((user) => {
+        if (user) {
+          res.json(user);
+        } else {
+          res.status(404).json({ error: 'User not found' });
+        }
+      })
+  });
 
 app.post('/api/products', (req, res) => {
     // Handle the incoming POST request
@@ -52,11 +59,3 @@ app.post('/api/products', (req, res) => {
     // Send a response back to the frontend
     res.json({ message: 'Data received and processed successfully' });
   });
-
-
-
-
-
-
-
-

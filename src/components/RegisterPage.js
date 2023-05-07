@@ -46,13 +46,12 @@ export default function RegisterPage() {
 
             const url = 'http://localhost:8000/api/register';
             const data = {
-                UID: currentUser.uid,
                 Care: values.care,
                 Name: values.name,
                 Email: values.email,
             };
 
-            fetch(url, {
+            await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -71,7 +70,7 @@ export default function RegisterPage() {
 
             setTimeout(() => {
                 navigate('/login')
-            }, 3000)
+            }, 1500)
             
             
         }
@@ -89,7 +88,7 @@ export default function RegisterPage() {
                 <Card title="Create an Account" bordered={true} style={{ width: 500 }}>
                 {alertMessage && (
                     <Alert
-                    message={currentUser && currentUser.email}
+                    message={alertMessage}
                     type={alertType}
                     style = {{margin: 15}}
                     showIcon
