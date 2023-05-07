@@ -68,7 +68,11 @@ function TopNavBar() {
       .then(response => response.json())
       .then(data => {
         console.log(data)
-        localStorage.setItem('CARE_CAL_WEATHER_JSON', data)
+        try {
+          localStorage.setItem('CARE_CAL_WEATHER_JSON', data);
+        } catch (error) {
+          console.error('Error storing data in localStorage:', error);
+        }        
         return data
       })
     })
