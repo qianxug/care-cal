@@ -11,7 +11,6 @@ import { Link } from 'react-router-dom';
 import { createEvent } from "ics";
 import { saveAs } from "file-saver";
 import TopNavBar from './TopNavBar';  
-import DownloadButton from "./DownloadButton"
 
 const PRODUCTS_KEY = 'care-cal.products';
 
@@ -230,10 +229,20 @@ function DashboardPage() {
     }
 
     else if (info.event.title === '(Re)apply sunscreen') {
+      function random_item(items){
+        return items[Math.floor(Math.random()*items.length)]
+      }
+      let messages = ["I hate skin cancer and I don't think you'd like it much either. Consider reapplying your sunscreen",
+                      "Dying to the sun isn't fun. It sunscreen time.",
+                      "Two americans die to UV related chronic conditions per hour. Lest you not be one of them.",
+                      "Don't wear your sunscreen. I don't care. It'll be you who'll look splotchy and aged.",
+                      "SPF = BFF",
+                      "SSSSSUUUUUUNNNNNNSSSSCCCRRRREEEEEEEEEEEENNNNNNNNNN"] 
       return (
         <div>
           <Tooltip 
-            title={"do you want to die? i think not! so wear the damn sunscreen!"}> 
+            title={random_item(messages)}> 
+            {/* info.event.extendedProps. */}
             <div>
               <div>{info.timeText}</div>
               <div>{info.event.title}</div>
@@ -268,32 +277,8 @@ function DashboardPage() {
     //   title: "AM skincare",
     //   description: "1. primary cleanser",
     // },
-    
 
-    var cal = ics();
-    cal.addEvent(subject, description, location, begin, end);
-    cal.addEvent(subject, description, location, begin, end); // yes, you can have multiple events :-)
-    cal.download(filename);
   }
-
-  // function exportClickHandler() {
-  //   const event = new ICS.VEVENT();
-  //   event.addProp('UID');
-  //   event.addProp('DTSTART', new Date('2015-07-18 10:00:00'), { VALUE: 'DATE-TIME' });
-  //   event.addProp('DTEND', new Date('2015-07-18 11:00:00'), { VALUE: 'DATE-TIME' });
-  //   event.addProp('ATTENDEE', null, {
-  //     CN: 'Sample Company',
-  //     RSVP: 'FALSE:mailto:foo@example.com'
-  //   })
-
-  //   console.log(event)
-    
-  //   cal.addComponent(event);
-
-  //   console.log(cal)
-
-  //   saveAs(cal.toBlob(), 'calendar.ics');
-  // }
 
   return (
     <div className='container'>
@@ -310,10 +295,6 @@ function DashboardPage() {
             bordered={true} 
             extra={
               <div>
-                  {/* <Button type="primary" shape = "circle" icon={<PlusOutlined />} size='medium' style={{ marginRight: '10px' }}/> */}
-                  {/* <Link to="/products">
-                    <Button type="primary" shape="circle" icon={<EditOutlined />} size='medium' style={{ marginRight: '10px' }} />
-                  </Link> */}
                   <Button 
                     type="primary" 
                     shape="circle" 
@@ -322,7 +303,6 @@ function DashboardPage() {
                     onClick={exportClickHandler} 
                   >
                   </Button>
-                  {/* <DownloadButton /> */}
               </div>}>
 
             <FullCalendar
