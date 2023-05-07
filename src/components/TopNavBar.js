@@ -1,12 +1,15 @@
 import React, { Component, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Menu, Avatar, Dropdown } from 'antd';
+import { Layout, Menu, Avatar, Dropdown,TimePicker } from 'antd';
 import { Link } from 'react-router-dom';
 import { LogoutOutlined, ShoppingCartOutlined, UserOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext'
 import WEATHER_API_KEY from './env';
 
 const { Header } = Layout;
+const onChange = (time, timeString) => {
+  console.log(time, timeString);
+};
 
 function TopNavBar() {
   const navigate = useNavigate();
@@ -14,7 +17,9 @@ function TopNavBar() {
 
   const id = localStorage.getItem('CARE_CAL_ID'); 
   const email = localStorage.getItem('CARE_CAL_EMAIL');  
-  const name = localStorage.getItem('CARE_CAL_NAME');  
+  const name = localStorage.getItem('CARE_CAL_NAME');
+  
+  const getPopupContainer = (trigger) => trigger.parentNode;
 
   const userMenu = (
     <Menu>
@@ -23,6 +28,14 @@ function TopNavBar() {
       <Menu.Item><b>Email:</b> {email}</Menu.Item>
       <Menu.Item><b>Default wake up time:</b> 8:00 AM</Menu.Item>
       <Menu.Item><b>Default sleep time:</b> 11:00 PM</Menu.Item>
+      <Menu.Item>
+        <TimePicker 
+          use12Hours 
+          format="h:mm a" 
+          onChange={onChange}
+          getPopupContainer={getPopupContainer}
+        />
+      </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="weather" icon={<EnvironmentOutlined />} onClick={() => weatherHandler()}>Update Weather Data</Menu.Item>
       <Menu.Item key="signout" icon={<LogoutOutlined />} onClick={() => logoutHandler()}>Sign Out</Menu.Item>
@@ -61,17 +74,13 @@ function TopNavBar() {
       .then(response => response.json())
       .then(data => {
         console.log(data)
+        localStorage.setItem('CARE_CAL_WEATHER_JSON', data)
         return data
       })
     })
-
-
-
-    // [latitude, longitude] = getLocation()
     
   }
   
-
   async function logoutHandler() {
     await logout()
     navigate('/login');

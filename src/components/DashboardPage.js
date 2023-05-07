@@ -94,7 +94,11 @@ function DashboardPage() {
   return (
     <div className='container'>
       <TopNavBar />
-      <div style={{ backgroundColor: '#f2f2f2', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <div style={{ backgroundColor: '#f2f2f2', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', position: 'relative' }}>
+        <div style={{ position: 'absolute', top: '10px', left: '10px' }}>
+          <h2>Welcome {localStorage.getItem('CARE_CAL_NAME')}</h2>
+          <h>Update your location for weather updates and begin scheduling in the products tab</h>
+        </div>
         <div style={{ width: '80%' }}>
           <Card 
             title='Week View' 
@@ -122,10 +126,9 @@ function DashboardPage() {
           </Card>
         </div>
       </div>
-
       {/* TEST BUTTONS BELOW, REMOVE THESE LATER */}
-      <Button onClick={() => addClickHandler("am", "Monday", "product1")}>AM add</Button>
-      <Button onClick={() => addClickHandler("pm", "Tuesday", "product2")}>PM add</Button>
+      {/* <Button onClick={() => addClickHandler("am", "Monday", "product1")}>AM add</Button>
+      <Button onClick={() => addClickHandler("pm", "Tuesday", "product2")}>PM add</Button> */}
     </div>
   );
 }
