@@ -16,7 +16,7 @@ const PRODUCTS_KEY = 'care-cal.routine-events'
 
 function DashboardPage() {
   const [routineEvents, setRoutineEvents] = useState([]);
-  const [sunscreenEvents, setSunscreenEvents] = useState([]);
+  const [sunscreenEvents, setSunscreenEvents] = useState([]);   // IMPORTANT FEATURE MUST IMPLEMENT
   const [products, setProducts] = useState([]);
   const [size, setSize] = useState('large');
 
@@ -48,7 +48,7 @@ function DashboardPage() {
     const targetDateTime = meridian === 'am' ? targetDate +  'T' + wakeUpTime : targetDate + 'T' + sleepTime;
     
     const newRoutineEvents = [...routineEvents];
-    const result = newRoutineEvents.find((item) => targetDateTime === item.start)
+    const result = newRoutineEvents.find((item) => targetDateTime === item.start);
 
     if (result) { 
       result.products.push({
