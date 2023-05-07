@@ -9,7 +9,6 @@ import {useAuth} from "../contexts/AuthContext"
 import { Link } from 'react-router-dom';
 // import ICalendarLink from 'react-icalendar-link';
 import { createEvent } from "ics";
-import * as ICS from 'ics-js';
 import { saveAs } from "file-saver";
 import TopNavBar from './TopNavBar';  
 
@@ -17,17 +16,18 @@ const PRODUCTS_KEY = 'care-cal.products';
 
 function DashboardPage() {
   const [routineEventsDisplay, setRoutineEventsDisplay] = useState([]);
-  const [sunscreenEvents, setSunscreenEvents] = useState([]);   // IMPORTANT FEATURE MUST IMPLEMENT
+  const [sunscreenEventsDisplay, setSunscreenEventsDisplay] = useState([]);   // IMPORTANT FEATURE MUST IMPLEMENT
   const [products, setProducts] = useState([]);
   const [size, setSize] = useState('large');
 
   const {currentUser} = useAuth()
-  const cal = new ICS.VCALENDAR();
+  // const cal = new ICS.VCALENDAR();
   const routineEvents = [];
+  const sunscreenEvents = [];
 
   // CHANGE THESE TO UPDATE AS PER USER SELECTION
-  const wakeUpTime = ['08:00:00', '08:00:00', '08:00:00', '08:00:00', '08:00:00', '08:00:00', '08:00:00'];
-  const sleepTime = ['21:00:00', '21:00:00', '21:00:00', '21:00:00', '21:00:00', '21:00:00', '21:00:00'];
+  const wakeUpTime = ['06:02:00', '06:00:00', '05:59:00', '05:58:00', '05:57:00', '05:56:00', '05:54:00'];
+  const sleepTime = ['20:26:00', '20:27:00', '20:29:00', '20:30:00', '20:31:00', '20:32:00', '20:33:00'];
 
   useEffect(() => {
     const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
@@ -43,50 +43,10 @@ function DashboardPage() {
 
     setRoutineEventsDisplay(routineEvents);
 
-    // try {
-      // const weatherData = JSON.parse(localStorage.getItem('CARE_CAL_WEATHER_JSON'));
-      const weatherData = localStorage.getItem('CARE_CAL_WEATHER_JSON');
-
-      if (!weatherData)
-        console.log("ASDJLFDAJKSLFD;OIS")
-      
-      else {
-        // console.log(JSON.stringify(weatherData))
-        console.log(weatherData)
-      }
-
-    // } catch (error) {
-    //   console.log(error);
-    // }
-
-    // const weatherData = localStorage.getItem('CARE_CAL_WEATHER_JSON');
-    
-    if (weatherData) {
-      console.log(weatherData)
-      const keys = Object.keys(weatherData);
-
-      console.log(keys);
-      
-      for (let key in JSON.parse(weatherData)) {
-        console.log(key);
-        console.log(weatherData[key]);
-      }
-
-      // const weatherDataParsed = JSON.parse(weatherData);
-      // for (let i = 0; i < 7; i++) {
-      //   console.log("in for loop")
-      //   // if (weatherData.daily) {
-      //     console.log("in if")
-      //     console.log(weatherData.daily[i].sunrise)
-        // }
-        // wakeUpTime[i] = moment.unix(weatherData.daily[i].sunrise).format('HH:mm:ss');
-        // console.log(wakeUpTime[i])
-      // }
-    }
-
+    remindSunscreenHandler();
   }, []);
 
-  const updatedEvents = [...routineEvents, ...sunscreenEvents];
+  const updatedEvents = [...routineEventsDisplay, ...sunscreenEventsDisplay];
 
   const testEvents = {
     start: [2023, 5, 7, 2, 30],
@@ -95,12 +55,48 @@ function DashboardPage() {
     description: "sussy mongoose",
   }
 
+  function remindSunscreenHandler() {
+    for (let i = 0; i < 7; i++) {
+      const targetDate = moment().subtract(moment().day(), 'days').add(i, 'days').format('YYYY-MM-DD');
+        
+      let startTime = moment(wakeUpTime[i], 'HH:mm:ss').add(3.5, 'hours').format('HH:mm:ss');
+      let endTime = moment(startTime, 'HH:mm:ss').add(3.5, 'hours').format('HH:mm:ss');
+      
+      if (moment(startTime, 'HH:mm:ss').isBefore(moment(sleepTime[i], 'HH:mm:ss'))) {
+        sunscreenEvents.push({
+          title: "(Re)apply sunscreen",
+          start: targetDate + 'T' + startTime,
+          end: moment(targetDate + 'T' + startTime, 'YYYY-MM-DDTHH:mm:ss').add(1, 'hours')
+        })
+      }
+
+      while (moment(endTime, 'HH:mm:ss').isBefore(moment(sleepTime[i], 'HH:mm:ss'))) {
+        startTime = endTime;
+        endTime = moment(startTime, 'HH:mm:ss').add(3.5, 'hours').format('HH:mm:ss');
+
+        sunscreenEvents.push({
+          title: "(Re)apply sunscreen",
+          start: targetDate + 'T' + startTime,
+          end: moment(targetDate + 'T' + startTime, 'YYYY-MM-DDTHH:mm:ss').add(1, 'hours')
+        })
+      }
+    }
+
+    console.log(sunscreenEvents)
+
+    setSunscreenEventsDisplay(sunscreenEvents)
+  }
+
   function addClickHandler(meridian, dayOfWeek, productName, productType) {
-    const dayNumber = moment(dayOfWeek, 'dddd').isoWeekday();
+    const dayNumber = dayOfWeek === 'Sunday'? 0 : moment(dayOfWeek, 'dddd').isoWeekday();
     const targetDate = moment().subtract(moment().day(), 'days').add(dayNumber, 'days').format('YYYY-MM-DD');
-    const targetDateTime = meridian === 'am' ? targetDate +  'T' + wakeUpTime[0] : targetDate + 'T' + sleepTime[0];
+    const targetDateTime = meridian === 'am' ? targetDate +  'T' + wakeUpTime[dayNumber] : targetDate + 'T' + sleepTime[dayNumber];
 
     const result = routineEvents.find((item) => targetDateTime === item.start);
+
+    console.log(dayOfWeek + ":")
+    console.log(dayNumber)
+    console.log(targetDateTime)
 
     if (result) {
       result.products.push({
@@ -123,14 +119,25 @@ function DashboardPage() {
   }
 
   function handleEventsRender(info) {
-    const productsList = info.event.extendedProps.products.map((product) => (
-      <li key={product.name}>
-        {product.name}
-      </li>
-    ));
+    if (info.event.extendedProps.products) {
+      const productsList = info.event.extendedProps.products.map((product) => (
+        <li key={product.name}>
+          {product.name}
+        </li>
+      ));
+
+      return (
+        <Tooltip title={<ol>{productsList}</ol>}>
+          <div>
+            <div>{info.timeText}</div>
+            <div>{info.event.title}</div>
+          </div>
+        </Tooltip>
+      )
+    }
   
     return (
-      <Tooltip title={<ol>{productsList}</ol>}>
+      <Tooltip title={"do you want to die? i think not! so wear the damn sunscreen!"}> 
         <div>
           <div>{info.timeText}</div>
           <div>{info.event.title}</div>
@@ -140,19 +147,17 @@ function DashboardPage() {
   }
 
   function exportClickHandler() {
-    // if (routineEvents.length !== 0) {
-      const testEvents = {
-        start: [2023, 5, 8, 8, 0],
-        duration: { hours: 1, minutes: 0 },
-        title: "AM skincare",
-        description: "1. primary cleanser",
-      }
+    const testEvents = {
+      start: [2023, 5, 8, 8, 0],
+      duration: { hours: 1, minutes: 0 },
+      title: "AM skincare",
+      description: "1. primary cleanser",
+    }
 
-      createEvent(testEvents, (error, value) => {
-        const blob = new Blob([value], { type: "text/plain;charset=utf-8" });
-        saveAs(blob, "event-schedule.ics");
-      });
-    // }
+    createEvent(testEvents, (error, value) => {
+      const blob = new Blob([value], { type: "text/plain;charset=utf-8" });
+      saveAs(blob, "event-schedule.ics");
+    });
   }
 
   // function exportClickHandler() {
@@ -173,7 +178,6 @@ function DashboardPage() {
 
   //   saveAs(cal.toBlob(), 'calendar.ics');
   // }
-
 
   return (
     <div className='container'>
@@ -201,14 +205,13 @@ function DashboardPage() {
                     size='medium'
                     onClick={exportClickHandler} 
                   >
-                    {/* <ICalendarLink event={testEvents}>Hi</ICalendarLink> */}
                   </Button>
               </div>}>
 
             <FullCalendar
               plugins={[timeGridPlugin]}
               initialView="timeGridWeek"
-              events={routineEventsDisplay}
+              events={updatedEvents}
               eventContent={handleEventsRender}
               aspectRatio={3.0}
               headerToolbar={{
