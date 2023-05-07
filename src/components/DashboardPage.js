@@ -11,9 +11,9 @@ import { Link } from 'react-router-dom';
 import { createEvent } from "ics";
 import { saveAs } from "file-saver";
 import TopNavBar from './TopNavBar';  
+import DownloadButton from "./DownloadButton"
 
 const PRODUCTS_KEY = 'care-cal.products';
-
 
 function DashboardPage() {
   const [routineEventsDisplay, setRoutineEventsDisplay] = useState([]);
@@ -181,11 +181,18 @@ function DashboardPage() {
       title: "AM skincare",
       description: "1. primary cleanser",
     }
+    // {
+    //   start: [2023, 5, 9, 8, 0],
+    //   duration: { hours: 1, minutes: 0 },
+    //   title: "AM skincare",
+    //   description: "1. primary cleanser",
+    // },
+    
 
-    createEvent(testEvents, (error, value) => {
-      const blob = new Blob([value], { type: "text/plain;charset=utf-8" });
-      saveAs(blob, "event-schedule.ics");
-    });
+    var cal = ics();
+    cal.addEvent(subject, description, location, begin, end);
+    cal.addEvent(subject, description, location, begin, end); // yes, you can have multiple events :-)
+    cal.download(filename);
   }
 
   // function exportClickHandler() {
@@ -223,9 +230,9 @@ function DashboardPage() {
             extra={
               <div>
                   {/* <Button type="primary" shape = "circle" icon={<PlusOutlined />} size='medium' style={{ marginRight: '10px' }}/> */}
-                  <Link to="/products">
+                  {/* <Link to="/products">
                     <Button type="primary" shape="circle" icon={<EditOutlined />} size='medium' style={{ marginRight: '10px' }} />
-                  </Link>
+                  </Link> */}
                   <Button 
                     type="primary" 
                     shape="circle" 
@@ -234,6 +241,7 @@ function DashboardPage() {
                     onClick={exportClickHandler} 
                   >
                   </Button>
+                  {/* <DownloadButton /> */}
               </div>}>
 
             <FullCalendar

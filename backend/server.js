@@ -5,6 +5,7 @@ const mongooose = require('mongoose')
 const cors = require('cors');
 const app = express();
 const User = require("./models/careCal");
+const { spawn } = require('child_process');
 
 const username = 'qianxug'
 const password = 'qianxug'
@@ -75,3 +76,23 @@ app.post('/api/products/request', (req, res) => {
         res.json(result);
       })
   });
+
+
+  // app.post('/api/download', (req, res) => {
+  //   // Spawn a child process to execute the Python file
+  //   const {Email, Events} = req.body;
+  //   const pythonProcess = spawn('python', ['backend/download.py',req]);
+  
+  //   // Collect the output of the Python process
+  //   let output = '';
+  //   pythonProcess.stdout.on('data', (data) => {
+  //     output += data.toString();
+  //   });
+  
+  //   // Handle the completion of the Python process
+  //   pythonProcess.on('close', (code) => {
+  //     console.log(`Python process exited with code ${code}`);
+  //     // Send the output as the response
+  //     res.send(output);
+  //   });
+  // });
