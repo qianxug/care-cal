@@ -139,41 +139,21 @@ function ProductEntry({ product, submitHandler }) {
 }
 
 function ProductsPage() {
-  const [products, setProducts] = useState([
-    {
-      id: uuidv4(),
-      label: 'thing #1',
-      type: 'cleanser',
-      notes: 'sussy skincare, use with caution',
-      routine: [
-        {
-          meridian: 'am',
-          dayOfWeek: 'Monday'
-        },
-        {
-          meridian: 'pm',
-          dayOfWeek: 'Monday'
-        },
-        {
-          meridian: 'pm',
-          dayOfWeek: 'Wednesday'
-        }
-      ]
-    }]);
+  const [products, setProducts] = useState([]);
   const [currProduct, setCurrProduct] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  // useEffect(() => {
-  //   const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
+  useEffect(() => {
+    const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
     
-  //   if (Array.isArray(storedProducts)) {
-  //     setProducts(storedProducts);
-  //   }
-  // }, []);
+    if (Array.isArray(storedProducts)) {
+      setProducts(storedProducts);
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products))
-  // }, [products]);
+  useEffect(() => {
+    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products))
+  }, [products]);
 
   function menuItemClickHandler(id) {
     setIsEditing(false);
@@ -212,8 +192,7 @@ function ProductsPage() {
     });
 
     setProducts([...newProducts, newProduct]);
-
-    console.log(products)
+    setIsEditing(false);
   }
 
   return (
