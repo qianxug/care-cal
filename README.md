@@ -1,5 +1,4 @@
-# Getting Started with Create React App
-
+# careCal
 ## Inspiration
 The idea for careCal began as a passionate car conversation about, quite simply, WHY so many people refuse to wear sunscreen despite knowing the clear risks. This evolved into a discussion about a general lack of consistency in skincare and the role of simple and effective planners in that respect. Finding that a traditional calendar was very tedious, we sought to create a simple journal that recorded events by action rather than time with the hope of making this process much faster, smoother, and more informed. The end goal is an environment where people can connect with responsible sources for their health and make this very important lifestyle less daunting.
 
