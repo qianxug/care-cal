@@ -236,7 +236,7 @@ function DashboardPage() {
                       "Dying to the sun isn't fun. It sunscreen time.",
                       "Two americans die to UV related chronic conditions per hour. Lest you not be one of them.",
                       "Don't wear your sunscreen. I don't care. It'll be you who'll look splotchy and aged.",
-                      "SPF = BFF",
+                      "SPF == BFF",
                       "SSSSSUUUUUUNNNNNNSSSSCCCRRRREEEEEEEEEEEENNNNNNNNNN"] 
       return (
         <div>

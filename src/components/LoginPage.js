@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { Form, Input, Button, Card, Alert } from 'antd';
 import { useAuth, login } from '../contexts/AuthContext'
 import { useNavigate, useHistory } from 'react-router-dom';
-import weather from "../weather"
+
 
 
 const formItemLayout = {
